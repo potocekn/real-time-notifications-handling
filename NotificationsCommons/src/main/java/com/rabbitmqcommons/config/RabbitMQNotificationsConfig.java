@@ -1,20 +1,19 @@
-package com.rabbitmqlistener.notificationslistener.config;
+package com.rabbitmqcommons.config;
 
-import com.rabbitmqlistener.notificationslistener.listener.RabbitMqNotificationMessageListener;
 import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
-import org.springframework.amqp.rabbit.listener.MessageListenerContainer;
-import org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class RabbitMQNotificationsConfig {
 
-    private static final String QUEUE_NAME = "NotificationsQueue";
-    private static final String EXCHANGE_NAME = "NotificationsExchange";
-    private static final String ROUTING_KEY = "notify";
+    public static final String QUEUE_NAME = "NotificationsQueue";
+    public static final String EXCHANGE_NAME = "NotificationsExchange";
+    public static final String ROUTING_KEY = "notify";
 
     @Bean
     Queue notificationsQueue() {
@@ -44,13 +43,16 @@ public class RabbitMQNotificationsConfig {
         return cachingConnectionFactory;
     }
 
-    @Bean
-    MessageListenerContainer messageListenerContainer() {
-        SimpleMessageListenerContainer simpleMessageListenerContainer = new SimpleMessageListenerContainer();
-        simpleMessageListenerContainer.setConnectionFactory(connectionFactory());
-        simpleMessageListenerContainer.setQueues(notificationsQueue());
-        simpleMessageListenerContainer.setMessageListener(new RabbitMqNotificationMessageListener());
 
-        return simpleMessageListenerContainer;
+    @Bean
+    public RabbitTemplate customRabbitTemplate(final ConnectionFactory connectionFactory) {
+        final var rabbitTemplate = new RabbitTemplate(connectionFactory);
+        rabbitTemplate.setMessageConverter(producerJackson2MessageConverter());
+        return rabbitTemplate;
+    }
+
+    @Bean
+    public Jackson2JsonMessageConverter producerJackson2MessageConverter() {
+        return new Jackson2JsonMessageConverter();
     }
 }

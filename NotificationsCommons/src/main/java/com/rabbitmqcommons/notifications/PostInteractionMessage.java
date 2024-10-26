@@ -1,14 +1,16 @@
-package com.rabbitmqlistener.notificationslistener.notification;
+package com.rabbitmqcommons.notifications;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.io.Serializable;
 
 public record PostInteractionMessage(
-        String notificationId,
-        NotificationType type,
-        String userId,
-        String content,
-        NotificationPriority priority,
-        NotificationChannel channel
+        @JsonProperty("notification_id") String notificationId,
+        @JsonProperty("type") InteractionType type,
+        @JsonProperty("user_id")String userId,
+        @JsonProperty("content")String content,
+        @JsonProperty("priority")NotificationPriority priority,
+        @JsonProperty("channel")NotificationChannel channel
 ) implements Serializable {
 
     @Override
