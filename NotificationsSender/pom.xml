@@ -9,7 +9,7 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.rabbitmqsender</groupId>
-	<artifactId>notificationssender</artifactId>
+	<artifactId>NotificationsSender</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>NotificationsSender</name>
 	<description>NotificationsSender</description>
@@ -44,6 +44,12 @@
 			<groupId>org.springframework.amqp</groupId>
 			<artifactId>spring-rabbit-test</artifactId>
 			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>com.rabbitmqcommons</groupId>
+			<artifactId>NotificationsCommons</artifactId>
+			<version>1.0-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
 
