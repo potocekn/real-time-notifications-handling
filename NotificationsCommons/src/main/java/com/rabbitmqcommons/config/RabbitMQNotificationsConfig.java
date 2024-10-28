@@ -5,10 +5,13 @@ import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
 
 @Configuration
+@PropertySource("classpath:config.properties")
 public class RabbitMQNotificationsConfig {
 
     public static final String QUEUE_NAME = "NotificationsQueue";
@@ -34,11 +37,14 @@ public class RabbitMQNotificationsConfig {
     }
 
     @Bean
-    ConnectionFactory connectionFactory() {
+    ConnectionFactory connectionFactory(@Value("${rabbitmq.hostname:}") String hostname,
+                                        @Value("${rabbitmq.username:}") String username,
+                                        @Value("${rabbitmq.password:}") String password
+    ) {
         //TODO do through the properties file
-        CachingConnectionFactory cachingConnectionFactory = new CachingConnectionFactory("localhost");
-        cachingConnectionFactory.setUsername("guest");
-        cachingConnectionFactory.setPassword("guest");
+        CachingConnectionFactory cachingConnectionFactory = new CachingConnectionFactory(hostname);
+        cachingConnectionFactory.setUsername(username);
+        cachingConnectionFactory.setPassword(password);
 
         return cachingConnectionFactory;
     }
